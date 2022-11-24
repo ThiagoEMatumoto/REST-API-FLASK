@@ -1,29 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.hotel import HotelModel
 
-hoteis = [
-        {
-        'hotel_id': 'alpha',
-        'nome': 'Alpha Hotel',
-        'estrelas': 4.7,
-        'diaria': 150,
-        'cidade': 'Mogi das Cruzes'
-        },
-        {
-        'hotel_id': 'beta',
-        'nome': 'Beta Hotel',
-        'estrelas': 3.5,
-        'diaria': 30,
-        'cidade': 'Rio de Janeiro' 
-        },
-        {
-        'hotel_id': 'gama',
-        'nome': 'Gama Hotel',
-        'estrelas': 6.5,
-        'diaria': 270,
-        'cidade': 'São Paulo'
-        }
-]
 
 class Hoteis(Resource): 
     def get(self):
@@ -33,10 +10,10 @@ class Hotel(Resource):
     
     #selecionar os argumentos passados no json e colocar em uma variavel
     argumentos = reqparse.RequestParser()
-    argumentos.add_argument('nome', type=str, required=True, help="The field 'nome' cannot bt left blank.")
-    argumentos.add_argument('estrelas', type=float, required=True, help="The field 'estrelas' cannot bt left blank.")
-    argumentos.add_argument('diaria', type=float, required=True, help="The field 'diaria' cannot bt left blank.")
-    argumentos.add_argument('cidade', type=str, required=True, help="The field 'cidade' cannot bt left blank.")
+    argumentos.add_argument('nome', type=str, required=True, help="The field 'nome' cannot be left blank.")
+    argumentos.add_argument('estrelas', type=float, required=True, help="The field 'estrelas' cannot be left blank.")
+    argumentos.add_argument('diaria', type=float, required=True, help="The field 'diaria' cannot be left blank.")
+    argumentos.add_argument('cidade', type=str, required=True, help="The field 'cidade' cannot be left blank.")
     
     
     
