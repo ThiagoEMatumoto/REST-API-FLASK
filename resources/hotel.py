@@ -33,25 +33,28 @@ class Hotel(Resource):
     
     #selecionar os argumentos passados no json e colocar em uma variavel
     argumentos = reqparse.RequestParser()
-    argumentos.add_argument('nome')
-    argumentos.add_argument('estrelas')
-    argumentos.add_argument('diaria')
-    argumentos.add_argument('cidade')
-
-
-
+    argumentos.add_argument('nome', type=str, required=True, help="The field 'nome' cannot bt left blank.")
+    argumentos.add_argument('estrelas', type=float, required=True, help="The field 'estrelas' cannot bt left blank.")
+    argumentos.add_argument('diaria', type=float, required=True, help="The field 'diaria' cannot bt left blank.")
+    argumentos.add_argument('cidade', type=str, required=True, help="The field 'cidade' cannot bt left blank.")
+    
+    
+    
     def get(self, hotel_id):
         hotel = HotelModel.find_hotel(hotel_id)
         if hotel:
             return hotel.json()
         return {'message': 'Hotel not found.'}, 404 
-
+    
     def post(self, hotel_id):
         if HotelModel.find_hotel(hotel_id):
             return {'message': "Hotel id '{}' already exists".format(hotel_id)}, 400
         dados = Hotel.argumentos.parse_args()
         hotel = HotelModel(hotel_id, **dados)
-        hotel.save_hotel()
+        try:
+            hotel.save_hotel()
+        except:
+            return {'message': 'An internal error ocurred trying to save hotel'}, 500
         return hotel.json()
         
         
@@ -63,14 +66,21 @@ class Hotel(Resource):
             hotel_encontrado.save_hotel()
             return hotel_encontrado.json(), 200
         hotel = HotelModel(hotel_id, **dados)
-        hotel.save_hotel()
+        try:
+            hotel.save_hotel()
+        except:
+            return {'message': 'An internal error ocurred trying to save hotel'}, 500
         return hotel.json(), 201
-
-
+    
+    
     def delete(self, hotel_id):
         hotel = HotelModel.find_hotel(hotel_id)
         if hotel:
-            hotel.delete_hotel()
+            try:
+                hotel.delete_hotel()
+            except:
+                return {'message': 'An internal error ocurred trying to delete hotel'}, 500
             return {'message': 'Hotel deleted.'}
         return {'message': 'Hotel not found'}, 404
+    
     
