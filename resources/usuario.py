@@ -1,8 +1,8 @@
 from flask_restful import Resource, reqparse
 from models.usuario import UserModel
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from werkzeug.security import hmac
-
+from blacklist import BLACKLIST
 
 argumentos = reqparse.RequestParser()
 argumentos.add_argument('login', type=str, required=True, help="The field 'login' cannot be left blank.")
@@ -19,6 +19,7 @@ class User(Resource):
         return {'message': 'Unregistered user'}, 404
     
     # http://127.0.0.1:5000/usuarios/{user_id}
+    @jwt_required()
     def delete(self, user_id):
         user = UserModel.find_user(user_id) 
         if user:
@@ -57,3 +58,12 @@ class UserLogin(Resource):
         return {'message': 'The login or password is incorrect'}, 401
             
             
+class UserLogout(Resource):
+    
+    @jwt_required()
+    def post(self):
+        jwt_id = get_jwt()['jti']
+        BLACKLIST.add(jwt_id)
+        return{'message': 'Logged out successfully'}, 200
+    
+    
